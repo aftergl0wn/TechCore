@@ -63,3 +63,28 @@ def test_float(
 ):
     answer = run_calculator(value1, value2, action, monkeypatch)
     assert answer == result
+
+
+@pytest.mark.parametrize(
+    "value1, value2, action",
+    (
+        ("worl", 2.5, "+"),
+        (5.5, "home", "-")
+    )
+)
+def test_wrong_value(
+    value1, value2, action, run_calculator, monkeypatch, capsys
+):
+    with pytest.raises(StopIteration):
+        run_calculator(value1, value2, action, monkeypatch)
+    captured = capsys.readouterr()
+    assert "Введите корректное число" in captured.out
+
+
+def test_wrong_action(
+   run_calculator, monkeypatch, capsys
+):
+    with pytest.raises(StopIteration):
+        run_calculator("5", "2", "null", monkeypatch)
+    captured = capsys.readouterr()
+    assert "Введите корректную операцию" in captured.out
