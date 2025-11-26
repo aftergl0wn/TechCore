@@ -3,11 +3,12 @@ from decimal import Decimal, InvalidOperation
 
 def correct_value(name):
     while True:
+        value = input(name)
         try:
-            value = Decimal(input(name))
-            return value
+            value_dec = Decimal(value)
+            return value_dec
         except InvalidOperation:
-            print("Введите корректное число")
+            return value
 
 
 def correct_action(name):
@@ -20,14 +21,23 @@ def correct_action(name):
 
 
 def calculator(value1, value2, action):
-    if action == "+":
+    all_str = isinstance(value1, str) and isinstance(value2, str)
+    all_dec = isinstance(value1, Decimal) and isinstance(value2, Decimal)
+    if not all_str and not all_dec:
+        if isinstance(value1, Decimal):
+            value1 = int(value1)
+        else:
+            value2 = int(value2)
+    if action == "+" and (all_str or all_dec):
         return (value1+value2)
-    elif action == "-":
+    elif action == "-" and all_dec:
         return (value1-value2)
-    elif action == "/":
+    elif action == "/" and all_dec:
         return (value1/value2)
     elif action == "*":
         return (value1*value2)
+    else:
+        return "Невозможно совершить данную операцию"
 
 
 if __name__ == "__main__":

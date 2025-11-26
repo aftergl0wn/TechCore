@@ -66,19 +66,32 @@ def test_float(
 
 
 @pytest.mark.parametrize(
-    "value1, value2, action",
+    "value1, value2, action, result",
     (
-        ("worl", 2.5, "+"),
-        (5.5, "home", "-")
+        ("world", "world", "+", "worldworld"),
+        ("a", 3, "*", "aaa")
     )
 )
-def test_wrong_value(
-    value1, value2, action, run_calculator, monkeypatch, capsys
+def test_str_right(
+    value1, value2, action, result, run_calculator, monkeypatch
 ):
-    with pytest.raises(StopIteration):
-        run_calculator(value1, value2, action, monkeypatch)
-    captured = capsys.readouterr()
-    assert "Введите корректное число" in captured.out
+    answer = run_calculator(value1, value2, action, monkeypatch)
+    assert answer == result
+
+
+@pytest.mark.parametrize(
+    "value1, value2, action, result",
+    (
+        ("world", 3, "+", "Невозможно совершить данную операцию"),
+        ("a", 3, "-", "Невозможно совершить данную операцию"),
+        ("a", 3, "/", "Невозможно совершить данную операцию")
+    )
+)
+def test_str_err(
+    value1, value2, action, result, run_calculator, monkeypatch
+):
+    answer = run_calculator(value1, value2, action, monkeypatch)
+    assert answer == result
 
 
 def test_wrong_action(
