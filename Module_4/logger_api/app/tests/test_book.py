@@ -28,11 +28,6 @@ def value():
 
 
 @pytest.fixture(autouse=True)
-def logger_level():
-    logging.basicConfig(level=logging.INFO)
-
-
-@pytest.fixture(autouse=True)
 def clear_db():
     session.data.clear()
     session.id = 0
