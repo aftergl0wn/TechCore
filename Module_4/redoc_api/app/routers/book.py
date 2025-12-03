@@ -1,0 +1,34 @@
+import asyncio
+from http import HTTPStatus
+
+from fastapi import APIRouter, Depends, HTTPException
+
+from app.database import Session, get_db_session
+from app.schema.schema import BookSchema
+
+router = APIRouter()
+
+
+@router.post("/books")
+async def create_book(
+    book: BookSchema,
+    db: Session = Depends(get_db_session)
+):
+    db.id += 1
+    db.data[db.id] = book.dict()
+    await asyncio.sleep(1)
+    return db.data[db.id]
+
+
+@router.get("/books/{book_id}")
+async def get_book(
+    book_id: int,
+    db: Session = Depends(get_db_session)
+):
+    await asyncio.sleep(1)
+    if book_id not in db.data:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail="Book not found"
+        )
+    return db.data[book_id]
