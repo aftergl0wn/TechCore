@@ -1,0 +1,5 @@
+POSTGRES_USER=user
+POSTGRES_PASSWORD=mysecretpassword
+POSTGRES_DB=fastapi
+DB_HOST=localhost
+DB_PORT=5432
