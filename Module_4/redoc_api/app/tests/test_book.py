@@ -67,3 +67,17 @@ async def test_error_get(client, caplog):
     assert "Время выполнения" in caplog.text
     assert response.status_code == HTTPStatus.NOT_FOUND
     assert response.json() == {'detail': 'Book not found'}
+
+
+@pytest.mark.asyncio
+async def test_docs(client):
+    response = await client.get("/docs")
+    assert response.status_code == HTTPStatus.OK
+    assert "Swagger UI" in response.text
+
+
+@pytest.mark.asyncio
+async def test_redoc(client):
+    response = await client.get("/redoc")
+    assert response.status_code == HTTPStatus.OK
+    assert "ReDoc" in response.text
