@@ -6,8 +6,9 @@ import pytest_asyncio
 from alembic import command
 from alembic.config import Config
 from sqlalchemy import text
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.asyncio import (
+    AsyncSession, async_sessionmaker, create_async_engine
+)
 from testcontainers.postgres import PostgresContainer
 
 
@@ -33,7 +34,7 @@ def migrate(container):
 @pytest_asyncio.fixture
 async def async_session(migrate, container):
     engine = create_async_engine(container)
-    AsyncSessionLocal = sessionmaker(engine, class_=AsyncSession)
+    AsyncSessionLocal = async_sessionmaker(engine, class_=AsyncSession)
     async with AsyncSessionLocal() as async_session:
         yield async_session
 

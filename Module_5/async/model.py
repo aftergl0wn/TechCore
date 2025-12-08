@@ -2,7 +2,11 @@ import os
 from dotenv import load_dotenv
 
 from sqlalchemy import Integer, String
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.ext.asyncio import (
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine
+)
 from sqlalchemy.orm import (
     Mapped, declared_attr,
     declarative_base, mapped_column, sessionmaker
@@ -21,7 +25,7 @@ class Base:
 
 Base = declarative_base(cls=Base)
 engine = create_async_engine(os.environ["ASYNC_URL"])
-AsyncSessionLocal = sessionmaker(engine, class_=AsyncSession)
+AsyncSessionLocal = async_sessionmaker(engine, class_=AsyncSession)
 
 
 class Book(Base):
