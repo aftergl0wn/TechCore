@@ -19,7 +19,7 @@ class Base:
 
 
 Base = declarative_base(cls=Base)
-engine = create_engine(os.environ["DATABASE_URL"])
+engine = create_engine(os.environ["SYNC_URL"])
 SessionLocal = sessionmaker(engine, class_=Session)
 
 
