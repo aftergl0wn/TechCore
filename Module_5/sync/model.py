@@ -27,7 +27,7 @@ class Book(Base):
     __tablename__ = "book"
 
     title: Mapped[str] = mapped_column(String(20))
-    year: Mapped[int]
+    year: Mapped[int] = mapped_column(Integer, nullable=True)
 
 
 class Author(Base):
