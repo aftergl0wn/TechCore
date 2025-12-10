@@ -1,0 +1,36 @@
+from http import HTTPStatus
+
+import pytest
+
+
+@pytest.mark.asyncio
+async def test_post(async_client, value, author_data, caplog):
+    response = await async_client.post("/books", json=value)
+    assert response.status_code == HTTPStatus.OK
+    assert response.json()["title"] == value["title"]
+    assert response.json()["author_id"] == 1
+
+
+@pytest.mark.asyncio
+async def test_get(async_client, value, caplog):
+    await async_client.post("/books", json=value)
+    response = await async_client.get("/books/1")
+    assert response.status_code == HTTPStatus.OK
+    assert response.json()["title"] == value["title"]
+    assert response.json()["author_id"] == 1
+
+
+@pytest.mark.asyncio
+async def test_all_get(async_client, value, caplog):
+    await async_client.post("/books", json=value)
+    response = await async_client.get("/books")
+    assert response.status_code == HTTPStatus.OK
+    assert response.json()[0]["title"] == value["title"]
+    assert response.json()[0]["author"]["id"] == 1
+
+
+@pytest.mark.asyncio
+async def test_error_get(async_client, caplog):
+    response = await async_client.get("/books/1")
+    assert response.status_code == HTTPStatus.NOT_FOUND
+    assert response.json() == {'detail': 'Book not found'}
