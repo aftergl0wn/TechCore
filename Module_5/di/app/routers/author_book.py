@@ -17,6 +17,6 @@ router_author_book = APIRouter()
 async def create_author_book(
     author: AuthorSchemaRequest,
     book: BookSchemaRequest,
-    session: AsyncSession = Depends(get_db_session),
+    db: AsyncSession = Depends(get_db_session),
 ):
-    return await AuthorBookRepository.create(author, book, session)
+    return await AuthorBookRepository.create(author, book, db)

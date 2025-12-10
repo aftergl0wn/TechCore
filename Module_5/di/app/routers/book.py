@@ -19,9 +19,9 @@ router = APIRouter()
 )
 async def create_book(
     book: BookSchemaRequest,
-    session: AsyncSession = Depends(get_db_session),
+    db: AsyncSession = Depends(get_db_session),
 ):
-    return await BookRepository.create(book, session)
+    return await BookRepository.create(book, db)
 
 
 @router.get(
@@ -30,9 +30,9 @@ async def create_book(
 )
 async def get_book(
     book_id: int,
-    session: AsyncSession = Depends(get_db_session),
+    db: AsyncSession = Depends(get_db_session),
 ):
-    book = await BookRepository.get_by_id(book_id, session)
+    book = await BookRepository.get_by_id(book_id, db)
     if book is None:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
@@ -46,9 +46,9 @@ async def get_book(
     response_model=list[BookAllSchemaResponse]
 )
 async def get_all_book(
-    session: AsyncSession = Depends(get_db_session),
+    db: AsyncSession = Depends(get_db_session),
 ):
-    return await BookRepository.get_all(session)
+    return await BookRepository.get_all(db)
 
 
 @router.get(
@@ -56,6 +56,6 @@ async def get_all_book(
     response_model=list[BookSchemaReport]
 )
 async def report(
-    session: AsyncSession = Depends(get_db_session),
+    db: AsyncSession = Depends(get_db_session),
 ):
-    return await BookRepository.report(session)
+    return await BookRepository.report(db)

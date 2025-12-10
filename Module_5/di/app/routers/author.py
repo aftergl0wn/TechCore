@@ -16,9 +16,9 @@ router_author = APIRouter()
 )
 async def create_author(
     author: AuthorSchemaRequest,
-    session: AsyncSession = Depends(get_db_session),
+    db: AsyncSession = Depends(get_db_session),
 ):
-    return await AuthorRepository.create(author, session)
+    return await AuthorRepository.create(author, db)
 
 
 @router_author.get(
@@ -27,9 +27,9 @@ async def create_author(
 )
 async def author(
     author_id: int,
-    session: AsyncSession = Depends(get_db_session),
+    db: AsyncSession = Depends(get_db_session),
 ):
-    author = await AuthorRepository.get_by_id(author_id, session)
+    author = await AuthorRepository.get_by_id(author_id, db)
     if author is None:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
