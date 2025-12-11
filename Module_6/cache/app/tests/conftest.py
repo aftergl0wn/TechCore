@@ -23,7 +23,7 @@ def redis_mock():
 def db_session_mock():
     mock = AsyncMock(spec=AsyncSession)
     result_mock = MagicMock()
-    book = Book(id=1, title="Test Book", year=2025, author_id=1)
+    book = Book(id=1, title="Test Book", year=2025)
     result_mock.scalars.return_value.first.return_value = book
     mock.execute = AsyncMock(return_value=result_mock)
     return mock
@@ -60,5 +60,5 @@ def book_data():
     return {
         "id": 1,
         "title": "Test Book",
-        "year": 2020
+        "year": 2025
     }
