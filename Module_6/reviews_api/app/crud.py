@@ -32,9 +32,9 @@ class ReviewRepository:
             {"product_id": product_id}
         )
         data = []
-        async for value in cursor:
-            value["_id"] = str(value["_id"])
-            data.append(ReviewResponseSchema(**value))
+        async for doc in cursor:
+            doc["_id"] = str(doc["_id"])
+            data.append(ReviewResponseSchema(**doc))
         return data
 
     @staticmethod
