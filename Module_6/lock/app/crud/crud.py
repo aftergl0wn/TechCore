@@ -1,5 +1,3 @@
-import asyncio
-
 import json
 from fastapi.encoders import jsonable_encoder
 from redis.asyncio import Redis

@@ -1,7 +1,4 @@
-import asyncio
-
 import pytest
-from http import HTTPStatus
 
 from app.crud.crud import BookRepository
 from app.model import Book
@@ -16,5 +13,9 @@ async def test_lock(
     lock_mock.__aexit__ = mocker.AsyncMock(return_value=None)
     redis_mock_publish.lock = mocker.MagicMock(return_value=lock_mock)
     book = Book(id=1, title="Old")
-    await BookRepository.update_book(book, 1, book_data_new, db_session_mock, redis_mock_publish)
-    redis_mock_publish.lock.assert_called_once_with('inventory_lock:1', timeout=10)
+    await BookRepository.update_book(
+        book, 1, book_data_new, db_session_mock, redis_mock_publish
+    )
+    redis_mock_publish.lock.assert_called_once_with(
+        'inventory_lock:1', timeout=10
+    )
