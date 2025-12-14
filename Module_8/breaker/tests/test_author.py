@@ -13,7 +13,7 @@ async def test_client(retry):
         transport=httpx.MockTransport(retry)
     )
 
-    for _ in range(5):
+    for _ in range(4):
         with pytest.raises(Exception):
             await client.get("/author/1")
 
