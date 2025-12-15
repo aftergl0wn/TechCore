@@ -11,4 +11,3 @@ async def test_grpc_async_call():
     response = await servicer.GetAuthor(request, None)
     assert response.id == 1
     assert response.name == "Tom"
-    
