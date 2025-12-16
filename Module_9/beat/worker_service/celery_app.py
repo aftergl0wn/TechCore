@@ -18,5 +18,9 @@ celery_app.conf.update(
             "task": "service.WorkerService.nightly_report",
             "schedule": 300,
         }
-    }
+    },
+    worker_send_task_events=True,
+    task_send_sent_event=True,
 )
+
+import service
