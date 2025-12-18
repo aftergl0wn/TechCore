@@ -20,7 +20,7 @@ async def verify_token(
     try:
         payload = jwt.decode(
             token, os.getenv("JWT_SECRET_KEY"),
-            algorithms=[os.getenv("JWT_ALGORITHM",)]
+            algorithms=[os.getenv("JWT_ALGORITHM")]
         )
         return payload
     except JWTError:
