@@ -1,0 +1,17 @@
+from http import HTTPStatus
+
+from fastapi.testclient import TestClient
+import pytest
+
+from .main import app
+
+
+@pytest.fixture
+def client():
+    return TestClient(app)
+
+
+def test_root(client):
+    response = client.get("/")
+    assert response.status_code == HTTPStatus.OK
+    assert response.json() == {"status": "Hello"}
