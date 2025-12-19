@@ -114,8 +114,6 @@ services:
   traefik:
     image: traefik:v3.6.1
     container_name: traefik
-    # user: root
-    # restart: unless-stopped
     command:
       - "--configfile=/etc/traefik/traefik.prod.toml"
     ports:
