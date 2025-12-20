@@ -32,8 +32,6 @@ async def get_book(
             status_code=HTTPStatus.NOT_FOUND,
             detail="Book not found"
         )
-    book_count = get_book_counter()
-    book_count.add(1)
     background_tasks.add_task(
         asyncio.to_thread,
         send_book,
@@ -55,6 +53,8 @@ async def create_book(
     producer: Producer = Depends(create_producer),
 ):
     new_book = await BookRepository.create(book, db)
+    book_count = get_book_counter()
+    book_count.add(1)
     background_tasks.add_task(
         asyncio.to_thread,
         send_book,
