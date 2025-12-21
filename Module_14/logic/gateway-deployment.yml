@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi-gateway
+  labels:
+    app: fastapi-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fastapi-gateway
+  template:
+    metadata:
+      labels:
+        app: fastapi-gateway
+    spec:
+      containers:
+      - name: fastapi-gateway
+        image: fastapi-book-service:k8s
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8000
+          name: http
+        envFrom:
+        - configMapRef:
+            name: book-service-config
+        - secretRef:
+            name: app-secrets
