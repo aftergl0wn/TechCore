@@ -12,4 +12,5 @@ spec:
     protocol: TCP
     name: postgres
   selector:
-    app: postgres
+    app.kubernetes.io/name: postgresql
+    app.kubernetes.io/instance: postgresql
