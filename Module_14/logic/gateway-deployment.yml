@@ -15,14 +15,16 @@ spec:
         app: fastapi-gateway
     spec:
       containers:
-      - name: fastapi-gateway
-        image: fastapi-book-service:k8s
-        imagePullPolicy: IfNotPresent
+      - name: traefik
+        image: traefik:v3.6.1
+        args:
+          - --api.insecure=true
+          - --api.dashboard=true
+          - --entrypoints.web.address=:8080
+          - --entrypoints.traefik.address=:8081
+          - --log.level=INFO
         ports:
-        - containerPort: 8000
-          name: http
-        envFrom:
-        - configMapRef:
-            name: book-service-config
-        - secretRef:
-            name: app-secrets
+        - containerPort: 8080
+          name: web
+        - containerPort: 8081
+          name: traefik

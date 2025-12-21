@@ -7,9 +7,15 @@ metadata:
 spec:
   type: NodePort
   ports:
-  - port: 8000
-    targetPort: 8000
+  - port: 8080
+    targetPort: 8080
     protocol: TCP
-    name: http
+    name: web
+    nodePort: 30080
+  - port: 8081
+    targetPort: 8081
+    protocol: TCP
+    name: traefik
+    nodePort: 30081
   selector:
     app: fastapi-gateway
