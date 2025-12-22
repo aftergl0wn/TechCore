@@ -18,13 +18,21 @@ spec:
       - name: traefik
         image: traefik:v3.6.1
         args:
-          - --api.insecure=true
-          - --api.dashboard=true
-          - --entrypoints.web.address=:8080
-          - --entrypoints.traefik.address=:8081
-          - --log.level=INFO
+          - --entrypoints.web.address=0.0.0.0:8080
+          - --providers.file.filename=/etc/traefik/dynamic.yml
+          - --providers.file.watch=true
         ports:
         - containerPort: 8080
           name: web
-        - containerPort: 8081
-          name: traefik
+        readinessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        volumeMounts:
+        - name: traefik-config
+          mountPath: /etc/traefik
+      volumes:
+      - name: traefik-config
+        configMap:
+          name: traefik-config
