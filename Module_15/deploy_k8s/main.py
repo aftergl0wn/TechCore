@@ -10,6 +10,7 @@ from app.routers.router_mongo import router_review
 from app.tracing import get_prometheus_metrics, setup_zipkin_tracing
 
 structlog.configure(processors=[structlog.processors.JSONRenderer()])
+
 logger = structlog.get_logger(__name__)
 
 app = FastAPI()
