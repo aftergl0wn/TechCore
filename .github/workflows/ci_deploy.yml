@@ -1,0 +1,45 @@
+name: CI-DEPLOY
+
+on:
+  push:
+    branches:
+      - feature/TASK-1609-deploy-8
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Run tests
+        run: pytest Module_15/deploy/tests/ -v
+      
+      - name: Build Docker image
+        run: |
+          docker build -t book-service:latest -f Module_15/deploy/Dockerfile .
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      
+      - name: Tag Docker image
+        run: |
+          docker tag book-service:latest ${{ secrets.DOCKER_USERNAME }}/book-service:latest
+      
+      - name: Push Docker image to Docker Hub
+        run: |
+          docker push ${{ secrets.DOCKER_USERNAME }}/book-service:latest
