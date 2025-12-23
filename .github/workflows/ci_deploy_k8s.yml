@@ -26,7 +26,7 @@ jobs:
         run: kubectl cluster-info
       
       - name: Deploy to Kubernetes
-        run: kubectl apply -f Module_15/action/fastapi-deployment.yml
+        run: kubectl apply -f Module_15/deploy_k8s/fastapi-deployment.yml
       
       - name: Verify deployment
         run: kubectl rollout status deployment/fastapi-book-service
