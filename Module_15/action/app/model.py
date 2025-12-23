@@ -25,7 +25,10 @@ class Base:
 
 
 Base = declarative_base(cls=Base)
-engine = create_async_engine(os.environ["ASYNC_URL"].strip(), echo=True)
+engine = create_async_engine(
+    os.environ.get("ASYNC_URL", "postgresql+asyncpg://user:mysecretpassword@db:5432/fastapi").strip(),
+    echo=True
+)
 session_maker = async_sessionmaker(engine, class_=AsyncSession)
 
 

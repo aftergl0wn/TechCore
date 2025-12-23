@@ -18,13 +18,13 @@ structlog.configure(processors=[structlog.processors.JSONRenderer()])
 logger = structlog.get_logger(__name__)
 
 setup_zipkin_tracing("analytics-worker")
-start_http_server(int(os.getenv("METRICS_PORT")))
+start_http_server(int(os.getenv("METRICS_PORT", "8002")))
 
 tracer = trace.get_tracer(__name__)
 
 
 async def create_consumer():
-    bootstrap = os.getenv("KAFKA_BOOTSTRAP_SERVERS")
+    bootstrap = os.getenv("KAFKA_BOOTSTRAP_SERVERS", "kafka:9092")
     logger.info("create_kafka_consumer", bootstrap_servers=bootstrap)
     consumer = AIOKafkaConsumer(
         "book_views",

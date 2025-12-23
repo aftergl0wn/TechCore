@@ -99,7 +99,7 @@ class AuthorRepository:
 class AnalyticsRepository:
     @staticmethod
     def get_collection() -> Collation:
-        client = MongoClient(os.getenv("MONGO_URL"))
+        client = MongoClient(os.getenv("MONGO_URL", "mongodb://mongo:27017"))
         return client["analytics"]["book_views"]
 
     @staticmethod
