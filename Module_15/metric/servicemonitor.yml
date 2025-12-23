@@ -1,0 +1,14 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: fastapi-book-service
+  labels:
+    app: fastapi-book-service
+    release: prometheus-stack
+spec:
+  selector:
+    matchLabels:
+      app: fastapi-book-service
+  endpoints:
+  - port: http
+    path: /metrics
