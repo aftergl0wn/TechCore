@@ -13,7 +13,7 @@ WORKDIR /app
 
 COPY --from=builder /opt/venv /opt/venv
 
-COPY . .
+COPY Module_15/action/ .
 
 ENV PATH="/opt/venv/bin:$PATH"
 

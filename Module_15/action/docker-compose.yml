@@ -73,8 +73,8 @@ services:
 
   book-service:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ../..
+      dockerfile: Module_15/action/Dockerfile
     container_name: book-service
     env_file: .env
     depends_on:
@@ -92,8 +92,8 @@ services:
 
   celery-worker:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ../..
+      dockerfile: Module_15/action/Dockerfile
     container_name: celery-worker
     env_file: .env
     depends_on:
@@ -106,8 +106,8 @@ services:
 
   analytics-worker:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ../..
+      dockerfile: Module_15/action/Dockerfile
     container_name: analytics-worker
     env_file: .env
     depends_on:
@@ -120,8 +120,8 @@ services:
 
   flower:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ../..
+      dockerfile: Module_15/action/Dockerfile
     container_name: flower
     env_file: .env
     depends_on:
