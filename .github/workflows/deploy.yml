@@ -1,0 +1,29 @@
+name: CI-DEPLOY-K8S
+
+on:
+  push:
+    branches:
+      - feature/TASK-1609-k8s-9
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+      
+      - name: Verify minikube is running
+        run: minikube status
+        
+      - name: Set K8s Context
+        run: kubectl config use-context minikube
+      
+      - name: Verify cluster connection
+        run: kubectl cluster-info
+      
+      - name: Deploy to Kubernetes
+        run: kubectl apply -f Module_15/deploy_k8s/fastapi-deployment.yml
