@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: book-service-config
+  labels:
+    app: fastapi-book-service
+data:
+  OTEL_EXPORTER_OTLP_ENDPOINT: jaeger-collector:4317
