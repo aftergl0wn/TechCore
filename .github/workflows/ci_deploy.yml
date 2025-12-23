@@ -38,8 +38,8 @@ jobs:
       
       - name: Tag Docker image
         run: |
-          docker tag book-service:latest ${{ secrets.DOCKER_USERNAME }}/book-service:latest
+          docker tag book-service:latest afterglown//book-service:latest
       
       - name: Push Docker image to Docker Hub
         run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/book-service:latest
+          docker push afterglown//book-service:latest
