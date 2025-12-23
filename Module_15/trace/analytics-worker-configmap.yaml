@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: analytics-worker-config
+  labels:
+    app: analytics-worker
+data:
+  OTEL_EXPORTER_OTLP_ENDPOINT: jaeger-collector:4317
+  METRICS_PORT: "8002"
