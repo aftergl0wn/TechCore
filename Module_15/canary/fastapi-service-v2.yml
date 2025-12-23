@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: fastapi-book-service-v2
+spec:
+  selector:
+    app: fastapi-book-service
+    version: v2
+  ports:
+  - port: 80
+    targetPort: 8000
