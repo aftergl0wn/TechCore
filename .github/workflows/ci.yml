@@ -28,4 +28,4 @@ jobs:
       
       - name: Build Docker image
         run: |
-          docker build -t book-service:latest -f Module_15/action/Dockerfile Module_15/action
+          docker build -t book-service:latest -f Module_15/action/Dockerfile .
