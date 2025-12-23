@@ -79,4 +79,5 @@ async def create_book(
 async def get_all_book(
     db: AsyncSession = Depends(get_db_session),
 ):
+
     return await BookRepository.get_all(db)
