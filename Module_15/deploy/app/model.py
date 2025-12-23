@@ -46,6 +46,7 @@ class Book(Base):
         ForeignKey("author.id"),
         nullable=True
     )
+
     author: Mapped["Author"] = relationship(back_populates="books")
 
 
