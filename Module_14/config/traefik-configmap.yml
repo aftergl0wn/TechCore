@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: traefik-config
+  labels:
+    app: fastapi-gateway-service
+data:
+  dynamic.yml: |
+    http:
+      routers:
+        default:
+          entryPoints:
+            - web
+          rule: "PathPrefix(`/`)"
+          service: book-service
+          priority: 1
+      services:
+        book-service:
+          loadBalancer:
+            servers:
+              - url: "http://book-service:8000"
