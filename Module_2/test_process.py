@@ -1,14 +1,14 @@
 import time
 
-from .multiprocessing_process import multi_process, sum_process
+from .multiprocessing_process import main_process
 
 
-def test_multiprocessing_process():
-    flag_main = False
+def test_multiprocessing_process(capsys):
     start = time.time()
-    multi_process(sum_process, 100_000_000)
-    delta = time.time() - start
-    assert delta < 1
-    time.sleep(1)
-    flag_main = True
-    assert flag_main
+    main_process()
+    captured = capsys.readouterr()
+    assert time.time() - start < 6
+    assert 'Начало работы основного потока' in captured.out
+    assert 'Результат работы дочернего потока:4999999950000000' in captured.out
+    assert 'Результат работы основного потока:5' in captured.out
+    assert 'Окончание работы основного потока' in captured.out
