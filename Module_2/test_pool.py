@@ -1,6 +1,7 @@
 import pytest
+import time
 
-from .multiprocessing_pool import multi_pool, sum_process
+from .multiprocessing_pool import main_process
 
 
 @pytest.fixture
@@ -19,11 +20,36 @@ def value():
     return range(100_000_000, 100_000_010)
 
 
-def test_pool(value, result, capsys):
-    print('Начало работы основного потока')
-    answer = multi_pool(sum_process, value)
-    print('Окончание работы основного потока')
+def test_pool_sync(value, result, capsys):
+    main_process(False, value)
     captured = capsys.readouterr()
-    assert answer == result
     assert 'Начало работы основного потока' in captured.out
+    assert 'Результат работы дочернего потока:' in captured.out
+    assert str(result) in captured.out
+    assert 'Результат работы основного потока:5' in captured.out
     assert 'Окончание работы основного потока' in captured.out
+
+
+def test_pool_async(value, result, capsys):
+    main_process(True, value)
+    captured = capsys.readouterr()
+    assert 'Начало работы основного потока' in captured.out
+    assert 'Результат работы дочернего потока:' in captured.out
+    assert str(result) in captured.out
+    assert 'Результат работы основного потока:5' in captured.out
+    assert 'Окончание работы основного потока' in captured.out
+
+
+def test_pool_diff(value):
+    start_sync = time.time()
+    # map блокирует основной поток
+    # Здачи из основго потока будут выполнены только после map
+    main_process(False, value)
+    diff_sync = time.time() - start_sync
+    start_async = time.time()
+    # apply_async не блокирует основной поток
+    # Здачи из основго потока будут выполнены параллельно с apply_async
+    main_process(True, value)
+    diff_async = time.time() - start_async
+    assert diff_sync > diff_async
+    assert diff_sync - diff_async > 4
