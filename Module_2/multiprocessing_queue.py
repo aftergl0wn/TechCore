@@ -20,7 +20,7 @@ def consumer(queue, queue_out):
 def producer_multi(queue, data):
     producer_m = multiprocessing.Process(target=producer, args=(queue, data))
     producer_m.start()
-    producer_m.join()
+    return producer_m
 
 
 def consumer_multi(queue, queue_out):
@@ -28,7 +28,7 @@ def consumer_multi(queue, queue_out):
         target=consumer, args=(queue, queue_out)
     )
     consumer_m.start()
-    consumer_m.join()
+    return consumer_m
 
 
 if __name__ == "__main__":
@@ -36,7 +36,8 @@ if __name__ == "__main__":
     data = [i for i in range(5)]
     queue = multiprocessing.Queue()
     queue_out = multiprocessing.Queue()
-    producer_multi(queue, data)
-    consumer_multi(queue, queue_out)
+    producer_m = producer_multi(queue, data)
+    consumer_m = consumer_multi(queue, queue_out)
+    consumer_m.join()
     print(queue_out.get(timeout=2))
     print('Окончание работы основного потока')
