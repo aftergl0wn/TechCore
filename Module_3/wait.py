@@ -10,6 +10,7 @@ async def wait():
         )
     except TimeoutError:
         logging.error("Лимит времени исчерпан")
+        raise TimeoutError
 
 
 if __name__ == "__main__":
