@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi-gateway-service
+  labels:
+    app: fastapi-gateway-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fastapi-gateway-service
+  template:
+    metadata:
+      labels:
+        app: fastapi-gateway-service
+    spec:
+      containers:
+      - name: traefik
+        image: traefik:v3.6.1
+        args:
+          - --entrypoints.web.address=0.0.0.0:8080
+          - --providers.file.filename=/etc/traefik/dynamic.yml
+          - --providers.file.watch=true
+        ports:
+        - containerPort: 8080
+          name: web
+        readinessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        volumeMounts:
+        - name: traefik-config
+          mountPath: /etc/traefik
+      volumes:
+      - name: traefik-config
+        configMap:
+          name: traefik-config
