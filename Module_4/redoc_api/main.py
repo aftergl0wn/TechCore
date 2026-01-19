@@ -13,6 +13,7 @@ app.include_router(router)
 logging.basicConfig(level=logging.INFO)
 
 
+# В связи с проблемами с CORS добавлен кастомный url для документации в redoc
 @app.get("/redoc", include_in_schema=False)
 async def redoc_html():
     return get_redoc_html(
