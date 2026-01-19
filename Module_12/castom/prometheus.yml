@@ -1,0 +1,11 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'python-services'
+    static_configs:
+      - targets:
+          - 'book-service:8000'
+          - 'order-worker:8001'
+          - 'analytics-worker:8002'
