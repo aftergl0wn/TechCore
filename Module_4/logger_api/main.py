@@ -1,4 +1,4 @@
-import logging
+import structlog
 import time
 
 from fastapi import FastAPI, Request
@@ -9,14 +9,17 @@ from app.routers.book import router
 app = FastAPI()
 app.include_router(router)
 
-logging.basicConfig(level=logging.INFO)
+logger = structlog.get_logger()
 
 
 @app.middleware("http")
 async def log_time(request: Request, call_next):
     start = time.time()
     response = await call_next(request)
-    logging.info(
-        f"Время выполнения {request.method} {request.url.path} составило {time.time()-start}"
+    logger.info(
+        "Запрос выполнен",
+        method=request.method,
+        url=str(request.url),
+        time_delta=time.time()-start
     )
     return response
