@@ -14,9 +14,10 @@ async def create_book(
     book: BookSchema,
     db: Session = Depends(get_db_session)
 ):
-    db.id += 1
-    db.data[db.id] = book.dict()
-    await asyncio.sleep(1)
+    async with db.lock:
+        db.id += 1
+        db.data[db.id] = book.dict()
+        await asyncio.sleep(1)
     return db.data[db.id]
 
 
