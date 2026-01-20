@@ -1,7 +1,4 @@
-import os
-
 import pytest
-from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
@@ -22,13 +19,7 @@ def author_data():
 
 @pytest.fixture
 def session():
-    load_dotenv()
-    engine = create_engine(
-        f"postgresql://{os.getenv('POSTGRES_USER')}"
-        f":{os.getenv('POSTGRES_PASSWORD')}"
-        f"@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}"
-        f"/{os.getenv('POSTGRES_DB')}"
-    )
+    engine = create_engine("sqlite+pysqlite:///:memory:")
     Base.metadata.create_all(engine)
     session = Session(engine)
     yield session
