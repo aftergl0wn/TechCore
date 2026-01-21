@@ -1,9 +1,12 @@
 from http import HTTPStatus
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.crud.crud import BookRepository
+from app.crud.crud import create, get_by_id
+from app.model import get_db_session
 from app.schema.schema import BookSchemaRequest, BookSchemaResponse
+
 
 router = APIRouter()
 
@@ -14,8 +17,9 @@ router = APIRouter()
 )
 async def create_book(
     book: BookSchemaRequest,
+    db: AsyncSession = Depends(get_db_session),
 ):
-    return await BookRepository.create(book)
+    return await create(book, db)
 
 
 @router.get(
@@ -24,8 +28,9 @@ async def create_book(
 )
 async def get_book(
     book_id: int,
+    db: AsyncSession = Depends(get_db_session),
 ):
-    book = await BookRepository.get_by_id(book_id)
+    book = await get_by_id(book_id, db)
     if book is None:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,

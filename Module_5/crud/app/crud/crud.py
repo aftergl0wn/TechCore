@@ -1,26 +1,87 @@
-from sqlalchemy import select
+import structlog
+from http import HTTPStatus
+from typing import Optional
 
-from app.model import Book, session_maker
+from fastapi import HTTPException
+from sqlalchemy import select
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.model import Book
 from app.schema.schema import BookSchemaRequest
 
 
-class BookRepository:
+logger = structlog.get_logger()
 
-    @staticmethod
-    async def get_by_id(book_id: int) -> Book:
-        async with session_maker() as session:
-            book = await session.execute(
-                select(Book).where(Book.id == book_id)
-                )
-            book = book.scalars().first()
+
+async def get_by_id(
+    book_id: int,
+    session: AsyncSession,
+) -> Optional[Book]:
+    try:
+        book = await session.execute(
+            select(Book).where(Book.id == book_id)
+            )
+        book = book.scalars().first()
         return book
+    except SQLAlchemyError as db_err:
+        await session.rollback()
+        logger.error(
+            "Ошибка доступа к БД",
+            book_id=book_id,
+            type_error=type(db_err),
+            error=str(db_err)
+        )
+        raise HTTPException(
+            status_code=HTTPStatus.SERVICE_UNAVAILABLE,
+            detail="Try again later"
+        )
+    except Exception as e:
+        await session.rollback()
+        logger.error(
+            "Неизвестная ошибка",
+            book_id=book_id,
+            type_error=type(e),
+            error=str(e)
+        )
+        raise HTTPException(
+            status_code=HTTPStatus.SERVICE_UNAVAILABLE,
+            detail="Service unavailable"
+        )
 
-    @staticmethod
-    async def create(new_book: BookSchemaRequest) -> Book:
-        new_book_data = new_book.dict()
-        db_book = Book(**new_book_data)
-        async with session_maker() as session:
-            session.add(db_book)
-            await session.commit()
-            await session.refresh(db_book)
+
+async def create(
+    new_book: BookSchemaRequest,
+    session: AsyncSession,
+) -> Book:
+    new_book_data = new_book.dict()
+    db_book = Book(**new_book_data)
+    try:
+        session.add(db_book)
+        await session.commit()
+        await session.refresh(db_book)
         return db_book
+    except SQLAlchemyError as db_err:
+        await session.rollback()
+        logger.error(
+            "Ошибка доступа к БД",
+            book_data=new_book_data,
+            type_error=type(db_err),
+            error=str(db_err)
+        )
+        raise HTTPException(
+            status_code=HTTPStatus.SERVICE_UNAVAILABLE,
+            detail="Try again later"
+        )
+    except Exception as e:
+        await session.rollback()
+        logger.error(
+            "Неизвестная ошибка",
+            book_data=new_book_data,
+            type_error=type(e),
+            error=str(e)
+        )
+        raise HTTPException(
+            status_code=HTTPStatus.SERVICE_UNAVAILABLE,
+            detail="Service unavailable"
+        )
