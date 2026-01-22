@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+from typing import AsyncGenerator, Optional
 
 from sqlalchemy import ForeignKey, Integer, String
 from sqlalchemy.ext.asyncio import (
@@ -8,14 +9,14 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine
 )
 from sqlalchemy.orm import (
-    Mapped, declared_attr,
-    declarative_base, mapped_column, relationship
+    DeclarativeBase, Mapped,
+    declared_attr, mapped_column, relationship
 )
 
 load_dotenv(".env")
 
 
-class Base:
+class PreBase:
     @declared_attr
     def __tablename__(cls):
         return cls.__name__.lower()
@@ -23,17 +24,23 @@ class Base:
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
 
 
-Base = declarative_base(cls=Base)
+class Base(PreBase, DeclarativeBase):
+    pass
+
+
 engine = create_async_engine(os.environ["ASYNC_URL"])
 session_maker = async_sessionmaker(engine, class_=AsyncSession)
 
 
-class Book(Base):
-    __tablename__ = "book"
+async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
+    async with session_maker() as async_session:
+        yield async_session
 
-    title: Mapped[str] = mapped_column(String(20))
-    year: Mapped[int] = mapped_column(Integer, nullable=True)
-    author_id: Mapped[int] = mapped_column(
+
+class Book(Base):
+    title: Mapped[str] = mapped_column(String(250))
+    year: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    author_id: Mapped[Optional[int]] = mapped_column(
         ForeignKey("author.id"),
         nullable=True
     )
@@ -41,7 +48,5 @@ class Book(Base):
 
 
 class Author(Base):
-    __tablename__ = "author"
-
-    name: Mapped[str] = mapped_column(String(20))
+    name: Mapped[str] = mapped_column(String(250))
     books: Mapped[list["Book"]] = relationship(back_populates="author")

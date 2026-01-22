@@ -1,8 +1,10 @@
 from http import HTTPStatus
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.crud.crud import AuthorRepository
+from app.crud.crud import author_create, author_get_by_id
+from app.model import get_db_session
 from app.schema.schema import AuthorSchemaRequest, AuthorSchemaResponse
 
 router_author = APIRouter()
@@ -14,8 +16,9 @@ router_author = APIRouter()
 )
 async def create_author(
     author: AuthorSchemaRequest,
+    db: AsyncSession = Depends(get_db_session),
 ):
-    return await AuthorRepository.create(author)
+    return await author_create(author, db)
 
 
 @router_author.get(
@@ -24,8 +27,9 @@ async def create_author(
 )
 async def author(
     author_id: int,
+    db: AsyncSession = Depends(get_db_session),
 ):
-    author = await AuthorRepository.get_by_id(author_id)
+    author = await author_get_by_id(author_id, db)
     if author is None:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
